@@ -1,0 +1,27 @@
+# Virtual environments
+.venv/
+env/
+venv/
+*.env
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# Database files (if any)
+*.db
+*.sqlite
+
+# Alembic migrations folder (not necessary to track migration history)
+migrations/versions/
+
+# FastAPI server logs
+*.log
+
+# Coverage reports
+.coverage
+*.coveragerc
+
+# PyCharm settings (if you're using PyCharm)
+.idea/
