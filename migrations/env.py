@@ -3,7 +3,11 @@ from dotenv import load_dotenv
 from logging.config import fileConfig
 import os
 from sqlalchemy import create_engine, pool
-from sqlmodel import SQLModel
+
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from app.models import SQLModel
+
 # from myproject.database import get_database_url
 
 load_dotenv("./.env")
