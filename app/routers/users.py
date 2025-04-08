@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select, or_
 from app.models import User
-from app.schemas import UserCreate, UserRead, UserLogin
+from app.schemas.user import UserCreate, UserRead, UserLogin, UserUpdate, UserGet
 from app.database import get_session
 from app.utils.security import hash_password, verify_password
 from pydantic import EmailStr
@@ -51,7 +51,8 @@ async def login_user(user: UserLogin, session: Session = Depends(get_session)):
 
 
 @router.post("/", response_model=UserRead)
-async def create_user(user: UserCreate, session: Session = Depends(get_session)):
+async def create_user(user: UserCreate,
+                      session: Session = Depends(get_session)):
     validate_user(session, user.email, user.username)
 
     hashed_password = hash_password(user.password)
@@ -69,3 +70,39 @@ async def create_user(user: UserCreate, session: Session = Depends(get_session))
     session.commit()
     session.refresh(new_user)
     return new_user
+
+
+@router.put("/update/{user_id}", response_model=UserRead)
+async def update_user(user_id: str, user: UserUpdate,
+                      session: Session = Depends(get_session)):
+    statement = select(User).where(User.id == user_id)
+    user_to_update = session.exec(statement).first()
+    if not user_to_update:
+        raise HTTPException(status_code=404, detail="User not found")
+    data_to_update = user.model_dump(exclude_unset=True)
+    for key, value in data_to_update.items():
+        setattr(user_to_update, key, value)
+    session.add(user_to_update)
+    session.commit()
+    session.refresh(user_to_update)
+    return  user_to_update
+
+
+@router.delete("/delete/{user_id}", status_code=204)
+async def delete_user(user_id: str, session: Session = Depends(get_session)):
+    statement = select(User).where(User.id == user_id)
+    user_to_delete = session.exec(statement).first()
+    if not user_to_delete:
+        raise HTTPException(status_code=404, detail="User not found")
+    session.delete(user_to_delete)
+    session.commit()
+    return
+
+
+@router.get("/{username}", response_model=UserGet)
+async def get_user(username: str, session: Session = Depends(get_session)):
+    statement = select(User).where(User.username == username)
+    user_to_get = session.exec(statement).first()
+    if not user_to_get:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user_to_get
