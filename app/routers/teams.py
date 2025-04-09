@@ -35,3 +35,14 @@ async  def update_team(team_id: str, team: TeamUpdate,
     session.commit()
     session.refresh(team_to_update)
     return team_to_update
+
+
+@router.delete("/delete{team_id}", status_code=204)
+async def delete_team(team_id: str, session: Session = Depends(get_session)):
+    statement = select(Team).where(Team.id == team_id)
+    team_to_delete = session.exec(statement).first()
+    if not team_to_delete:
+        raise HTTPException(status_code=404, detail="Team not found")
+    session.delete(team_to_delete)
+    session.commit()
+    return
