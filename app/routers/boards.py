@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session, select, and_
-from app.models import Team, Member, User, Project, Board
+from sqlmodel import Session
+from app.models import Project, Board
 from app.schemas.board import BoardRead, BoardUpdate, BoardCreate
 from app.database import get_session
 
