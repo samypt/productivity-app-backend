@@ -44,3 +44,12 @@ async def delete_team(team_id: str, session: Session = Depends(get_session)):
     session.delete(team_to_delete)
     session.commit()
     return
+
+
+@router.get("/{team_name}", response_model=TeamRead)
+async def get_team(team_name: str, session: Session = Depends(get_session)):
+    statement = select(Team).where(Team.name == team_name)
+    team_to_get = session.exec(statement).first()
+    if not team_to_get:
+        raise HTTPException(status_code=404, detail="Team not found")
+    return team_to_get
