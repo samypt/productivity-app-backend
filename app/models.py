@@ -51,10 +51,10 @@ class Team(SQLModel, table=True):
 class Member(SQLModel, table=True):
     __tablename__ = 'members'
     id: str = Field(default_factory=lambda: str(uuid4()), primary_key=True)
-    team_id: int = Field(
+    team_id: str = Field(
         sa_column=Column(ForeignKey("teams.id", ondelete="CASCADE"))
     )
-    user_id: int = Field(
+    user_id: str = Field(
         sa_column=Column(ForeignKey("users.id", ondelete="CASCADE"))
     )
 
@@ -81,7 +81,7 @@ class Project(SQLModel, table=True):
     id: str = Field(default_factory=lambda: str(uuid4()), primary_key=True)
     name: str = Field(max_length=255, index=True, sa_column_kwargs={"nullable": False})
     description: Optional[str] = Field(default=None)
-    team_id: int = Field(
+    team_id: str = Field(
         sa_column=Column(ForeignKey("teams.id", ondelete="CASCADE"))
     )
     created_at: datetime = Field(default_factory=get_time_stamp)
@@ -98,7 +98,7 @@ class Board(SQLModel, table=True):
     __tablename__ = 'boards'
     id: str = Field(default_factory=lambda: str(uuid4()), primary_key=True)
     name: str = Field(max_length=255, index=True, sa_column_kwargs={"nullable": False})
-    project_id: int = Field(
+    project_id: str = Field(
         sa_column=Column(ForeignKey("projects.id", ondelete="CASCADE"))
     )
     created_at: datetime = Field(default_factory=get_time_stamp)
@@ -113,7 +113,7 @@ class BoardList(SQLModel, table=True):
     __tablename__ = 'board_lists'
     id: str = Field(default_factory=lambda: str(uuid4()), primary_key=True)
     name: str = Field(max_length=255, index=True, sa_column_kwargs={"nullable": False})
-    board_id: int = Field(
+    board_id: str = Field(
         sa_column=Column(ForeignKey("boards.id", ondelete="CASCADE"))
     )
     position: int = Field(index=True, sa_column_kwargs={"nullable": False})
@@ -128,7 +128,7 @@ class BoardList(SQLModel, table=True):
 class Task(SQLModel, table=True):
     __tablename__ = 'tasks'
     id: str = Field(default_factory=lambda: str(uuid4()), primary_key=True)
-    list_id: int = Field(
+    list_id: str = Field(
         sa_column=Column(ForeignKey("board_lists.id", ondelete="CASCADE"))
     )
     title: str = Field(max_length=255, index=True, sa_column_kwargs={"nullable": False})
@@ -156,13 +156,13 @@ class Event(SQLModel, table=True):
     __tablename__ = 'events'
     id: str = Field(default_factory=lambda: str(uuid4()), primary_key=True)
     title: str = Field(max_length=255, index=True, sa_column_kwargs={"nullable": False})
-    project_id: int = Field(
+    project_id: str = Field(
         sa_column=Column(ForeignKey("projects.id", ondelete="CASCADE"))
     )
     description: Optional[str] = Field(default=None)
     start_time: datetime = Field(index=True, sa_column_kwargs={"nullable": False})
     end_time: datetime = Field(index=True, sa_column_kwargs={"nullable": False})
-    created_by: int = Field(
+    created_by: str = Field(
         sa_column=Column(ForeignKey("users.id", ondelete="CASCADE"))
     )
     created_at: datetime = Field(default_factory=get_time_stamp)
