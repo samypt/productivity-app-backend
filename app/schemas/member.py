@@ -1,9 +1,6 @@
-from datetime import datetime
 from typing import Optional, Literal
 from sqlmodel import SQLModel
 from uuid import UUID
-
-
 
 
 class MemberCreate(SQLModel):
@@ -24,4 +21,4 @@ class MemberRead(MemberCreate):
 
 
 class MemberUpdate(SQLModel):
-    role: Optional[str]
+    role: Optional[Literal["owner", "editor", "viewer"]] = "editor"
