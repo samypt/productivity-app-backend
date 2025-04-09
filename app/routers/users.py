@@ -58,11 +58,7 @@ async def create_user(user: UserCreate,
     hashed_password = hash_password(user.password)
 
     new_user = User(
-        username=user.username,
-        first_name=user.first_name,
-        last_name=user.last_name,
-        email=user.email,
-        role=user.role,
+        **user.model_dump(exclude={"password"}),
         hashed_password=hashed_password
     )
 
