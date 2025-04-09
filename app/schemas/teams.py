@@ -15,3 +15,8 @@ class TeamRead(SQLModel):
     name: str
     description: Optional[str]
     created_at: Optional[datetime]
+
+
+
+class TeamUpdate(SQLModel):
+    description: Optional[str]
