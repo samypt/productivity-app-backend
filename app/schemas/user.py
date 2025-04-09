@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Literal, Optional
 from sqlmodel import SQLModel
 from pydantic import EmailStr, model_validator
+from uuid import UUID
 
 
 class UserCreate(SQLModel):
@@ -16,7 +17,7 @@ class UserCreate(SQLModel):
 
 
 class UserRead(SQLModel):
-    id: str
+    id: UUID
     username: str
     first_name: str
     last_name: str
