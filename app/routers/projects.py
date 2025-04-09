@@ -6,11 +6,11 @@ from app.database import get_session
 
 
 router = APIRouter(prefix="/projects", tags=["Projects"])
-db_session: Session = Depends(get_session)
+db_session = Depends(get_session)
 
 
 @router.post("/", response_model=ProjectRead)
-async def create_project(project: ProjectCreate, session = db_session):
+async def create_project(project: ProjectCreate, session: Session = db_session):
     statement = select(Project).where(
         and_(
             Project.name == project.name,
@@ -33,7 +33,7 @@ async def create_project(project: ProjectCreate, session = db_session):
 
 
 @router.get("/{project_id}", response_model=ProjectRead)
-async def get_project(project_id: str, session = db_session):
+async def get_project(project_id: str, session: Session = db_session):
     project_to_get = session.get(Project, project_id)
     if not project_to_get:
         raise HTTPException(status_code=404, detail="Project not found")
@@ -41,7 +41,7 @@ async def get_project(project_id: str, session = db_session):
 
 
 @router.delete("/delete/{project_id}", status_code=204)
-async def delete_project(project_id, session = db_session):
+async def delete_project(project_id, session: Session = db_session):
     project_to_delete = session.get(Project, project_id)
     if not project_to_delete:
         raise HTTPException(status_code=404, detail="Project not found")
@@ -51,7 +51,8 @@ async def delete_project(project_id, session = db_session):
 
 
 @router.put("/project/{project_id}", response_model=ProjectRead)
-async def update_project(project_id: str, project: ProjectUpdate, session = db_session):
+async def update_project(project_id: str, project: ProjectUpdate,
+                         session: Session = db_session):
     project_to_update = session.get(Project, project_id)
     if not project_to_update:
         raise HTTPException(status_code=404, detail="Project not found")
