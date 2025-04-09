@@ -71,8 +71,7 @@ async def create_user(user: UserCreate,
 @router.put("/update/{user_id}", response_model=UserRead)
 async def update_user(user_id: str, user: UserUpdate,
                       session: Session = Depends(get_session)):
-    statement = select(User).where(User.id == user_id)
-    user_to_update = session.exec(statement).first()
+    user_to_update = session.get(User, user_id)
     if not user_to_update:
         raise HTTPException(status_code=404, detail="User not found")
     data_to_update = user.model_dump(exclude_unset=True)
@@ -86,8 +85,7 @@ async def update_user(user_id: str, user: UserUpdate,
 
 @router.delete("/delete/{user_id}", status_code=204)
 async def delete_user(user_id: str, session: Session = Depends(get_session)):
-    statement = select(User).where(User.id == user_id)
-    user_to_delete = session.exec(statement).first()
+    user_to_delete = session.get(User, user_id)
     if not user_to_delete:
         raise HTTPException(status_code=404, detail="User not found")
     session.delete(user_to_delete)

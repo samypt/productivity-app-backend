@@ -24,8 +24,7 @@ async  def create_team(team: TeamCreate, session: Session = Depends(get_session)
 @router.put("/update/{team_id}", response_model=TeamRead)
 async  def update_team(team_id: str, team: TeamUpdate,
                        session: Session = Depends(get_session)):
-    statement = select(Team).where(Team.id == team_id)
-    team_to_update = session.exec(statement).first()
+    team_to_update = session.get(Team, team_id)
     if not team_to_update:
         raise HTTPException(status_code=404, detail="Team not found")
     data_to_update = team.model_dump(exclude_unset=True)
@@ -39,8 +38,7 @@ async  def update_team(team_id: str, team: TeamUpdate,
 
 @router.delete("/delete{team_id}", status_code=204)
 async def delete_team(team_id: str, session: Session = Depends(get_session)):
-    statement = select(Team).where(Team.id == team_id)
-    team_to_delete = session.exec(statement).first()
+    team_to_delete = session.get(Team, team_id)
     if not team_to_delete:
         raise HTTPException(status_code=404, detail="Team not found")
     session.delete(team_to_delete)
