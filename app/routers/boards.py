@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session
+from sqlmodel import Session, select, and_
 from app.models import Project, Board
 from app.schemas.board import BoardRead, BoardUpdate, BoardCreate
 from app.database import get_session
@@ -14,6 +14,18 @@ async def create_board(board: BoardCreate, session: Session = db_session):
     project = session.get(Project, board.project_id)
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
+    statement = select(Board).where(
+        and_(
+            Board.project_id == board.project_id,
+            Board.name == board.name
+        )
+    )
+    existing_board = session.exec(statement).first()
+    if existing_board:
+        raise HTTPException(status_code=409,
+                            detail="Board with this name already exists"
+                                   " in this project")
+
     new_board = Board(**board.model_dump())
     session.add(new_board)
     session.commit()
