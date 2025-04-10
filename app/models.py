@@ -27,6 +27,7 @@ class User(SQLModel, table=True):
 
     # Relationships
     teams: List["Member"] = Relationship(back_populates='user')
+    events: List["Event"] = Relationship(back_populates="user")
 
 
 
@@ -169,3 +170,4 @@ class Event(SQLModel, table=True):
 
     # Relationships
     project: Optional["Project"] = Relationship(back_populates="events")
+    user: Optional["User"] = Relationship(back_populates="events")
