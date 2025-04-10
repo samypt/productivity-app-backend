@@ -37,14 +37,14 @@ class TaskUpdate(SQLModel):
     title: Optional[str]
     description: Optional[str]
     list_id: Optional[str]
-    status: Optional[Literal["todo", "in_progress", "done"]] = "todo"
+    status: Optional[Literal["todo", "in_progress", "done"]]
     priority: Optional[int]
     due_date: Optional[datetime]
 
     @field_validator('priority')
     @classmethod
     def validate_priority(cls, v: int) -> int:
-        if not 1 <= v <= 5:
+        if v and not 1 <= v <= 5:
             raise ValueError('Priority must be between 1 and 5')
         return v
 
