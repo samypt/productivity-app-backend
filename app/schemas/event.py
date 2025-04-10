@@ -35,10 +35,8 @@ class EventRead(EventCreate):
 class EventUpdate(SQLModel):
     title: Optional[str]
     description: Optional[str]
-    project_id: Optional[str]
     start_time: Optional[datetime]
     end_time: Optional[datetime]
-    created_by: Optional[str]
 
     @model_validator(mode='after')
     def check_end_time(self):
