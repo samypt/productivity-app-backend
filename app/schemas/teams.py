@@ -10,13 +10,12 @@ class TeamCreate(SQLModel):
 
 
 
-class TeamRead(SQLModel):
+class TeamRead(TeamCreate):
     id: UUID
-    name: str
-    description: Optional[str]
     created_at: Optional[datetime]
 
-
+    class Config:
+        orm_mode = True
 
 class TeamUpdate(SQLModel):
     description: Optional[str]
