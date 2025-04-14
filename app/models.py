@@ -49,6 +49,23 @@ class Team(SQLModel, table=True):
 
 
 
+class TaskMemberLink(SQLModel, table=True):
+    __tablename__ = 'task_member_link'
+    id: str = Field(default_factory=lambda: str(uuid4()), primary_key=True)
+    task_id: str = Field(
+        sa_column=Column(ForeignKey("tasks.id", ondelete="CASCADE"))
+    )
+    member_id: str = Field(
+        sa_column=Column(ForeignKey("members.id", ondelete="CASCADE"))
+    )
+    # Defining the UNIQUE constraint on (task_id, member_id)
+    __table_args__ = (
+        UniqueConstraint("task_id", "member_id", name="unique_task_member"),
+    )
+
+
+
+
 class Member(SQLModel, table=True):
     __tablename__ = 'members'
     id: str = Field(default_factory=lambda: str(uuid4()), primary_key=True)
@@ -73,7 +90,8 @@ class Member(SQLModel, table=True):
     # Relationships
     user: Optional["User"] = Relationship(back_populates='teams', passive_deletes=True)
     team: Optional["Team"] = Relationship(back_populates='members', passive_deletes=True)
-
+    tasks: List["Task"] = Relationship(back_populates="members", link_model=TaskMemberLink,
+                                       passive_deletes=True)
 
 
 
@@ -149,6 +167,8 @@ class Task(SQLModel, table=True):
 
     # Relationships
     list: Optional["BoardList"] = Relationship(back_populates='tasks', passive_deletes=True)
+    members: List["Member"] = Relationship(back_populates='tasks', link_model=TaskMemberLink,
+                                           passive_deletes=True)
 
 
 
