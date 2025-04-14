@@ -26,8 +26,8 @@ class User(SQLModel, table=True):
     )
 
     # Relationships
-    teams: List["Member"] = Relationship(back_populates='user')
-    events: List["Event"] = Relationship(back_populates="user")
+    teams: List["Member"] = Relationship(back_populates='user', passive_deletes=True)
+    events: List["Event"] = Relationship(back_populates='user', passive_deletes=True)
 
 
 
@@ -43,8 +43,8 @@ class Team(SQLModel, table=True):
     created_at: datetime = Field(default_factory=get_time_stamp)
 
     # Relationships
-    members: List["Member"] = Relationship(back_populates='team')
-    projects: List["Project"] = Relationship(back_populates='team')
+    members: List["Member"] = Relationship(back_populates='team', passive_deletes=True)
+    projects: List["Project"] = Relationship(back_populates='team', passive_deletes=True)
 
 
 
@@ -71,8 +71,8 @@ class Member(SQLModel, table=True):
     )
 
     # Relationships
-    user: Optional["User"] = Relationship(back_populates='teams')
-    team: Optional["Team"] = Relationship(back_populates='members')
+    user: Optional["User"] = Relationship(back_populates='teams', passive_deletes=True)
+    team: Optional["Team"] = Relationship(back_populates='members', passive_deletes=True)
 
 
 
@@ -88,9 +88,9 @@ class Project(SQLModel, table=True):
     created_at: datetime = Field(default_factory=get_time_stamp)
 
     # Relationships
-    team: Optional["Team"] = Relationship(back_populates='projects')
-    boards: List["Board"] = Relationship(back_populates='project')
-    events: List["Event"] = Relationship(back_populates='project')
+    team: Optional["Team"] = Relationship(back_populates='projects', passive_deletes=True)
+    boards: List["Board"] = Relationship(back_populates='project', passive_deletes=True)
+    events: List["Event"] = Relationship(back_populates='project', passive_deletes=True)
 
 
 
@@ -105,8 +105,8 @@ class Board(SQLModel, table=True):
     created_at: datetime = Field(default_factory=get_time_stamp)
 
     # Relationships
-    project: Optional["Project"] = Relationship(back_populates='boards')
-    lists: List["BoardList"] = Relationship(back_populates='board')
+    project: Optional["Project"] = Relationship(back_populates='boards', passive_deletes=True)
+    lists: List["BoardList"] = Relationship(back_populates='board', passive_deletes=True)
 
 
 
@@ -121,8 +121,8 @@ class BoardList(SQLModel, table=True):
     created_at: datetime = Field(default_factory=get_time_stamp)
 
     # Relationships
-    board: Optional["Board"] = Relationship(back_populates='lists')
-    tasks: List["Task"] = Relationship(back_populates='list')
+    board: Optional["Board"] = Relationship(back_populates='lists', passive_deletes=True)
+    tasks: List["Task"] = Relationship(back_populates='list', passive_deletes=True)
 
 
 
@@ -148,7 +148,7 @@ class Task(SQLModel, table=True):
     created_at: datetime = Field(default_factory=get_time_stamp)
 
     # Relationships
-    list: Optional["BoardList"] = Relationship(back_populates='tasks')
+    list: Optional["BoardList"] = Relationship(back_populates='tasks', passive_deletes=True)
 
 
 
@@ -169,5 +169,5 @@ class Event(SQLModel, table=True):
     created_at: datetime = Field(default_factory=get_time_stamp)
 
     # Relationships
-    project: Optional["Project"] = Relationship(back_populates="events")
-    user: Optional["User"] = Relationship(back_populates="events")
+    project: Optional["Project"] = Relationship(back_populates="events", passive_deletes=True)
+    user: Optional["User"] = Relationship(back_populates="events", passive_deletes=True)
