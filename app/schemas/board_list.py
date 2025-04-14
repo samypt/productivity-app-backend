@@ -21,5 +21,5 @@ class BoardListRead(BoardListCreate):
 
 
 class BoardListUpdate(SQLModel):
-    name: Optional[str]
-    position: Optional[int]
+    name: Optional[str] = None
+    position: Optional[int] = None

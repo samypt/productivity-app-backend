@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, Literal
+from typing import Optional
 from sqlmodel import SQLModel
 from uuid import UUID
 from pydantic import model_validator
@@ -7,7 +7,7 @@ from pydantic import model_validator
 
 class EventCreate(SQLModel):
     title: str
-    description: Optional[str]
+    description: Optional[str] = None
     project_id: str
     start_time: datetime
     end_time: datetime
@@ -33,10 +33,10 @@ class EventRead(EventCreate):
 
 
 class EventUpdate(SQLModel):
-    title: Optional[str]
-    description: Optional[str]
-    start_time: Optional[datetime]
-    end_time: Optional[datetime]
+    title: Optional[str] = None
+    description: Optional[str] = None
+    start_time: Optional[datetime] = None
+    end_time: Optional[datetime] = None
 
     @model_validator(mode='after')
     def check_end_time(self):

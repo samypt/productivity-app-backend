@@ -6,7 +6,7 @@ from uuid import UUID
 
 class ProjectCreate(SQLModel):
     name: str
-    description: Optional[str]
+    description: Optional[str] = None
     team_id: str
 
 
@@ -23,4 +23,4 @@ class ProjectRead(ProjectCreate):
 
 
 class ProjectUpdate(SQLModel):
-    description: Optional[str]
+    description: Optional[str] = None

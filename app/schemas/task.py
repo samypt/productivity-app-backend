@@ -2,23 +2,22 @@ from datetime import datetime
 from typing import Optional, Literal
 from sqlmodel import SQLModel
 from uuid import UUID
-from pydantic import field_validator
+from pydantic import model_validator
 
 
 class TaskCreate(SQLModel):
     title: str
-    description: Optional[str]
+    description: Optional[str] = None
     list_id: str
     status: Optional[Literal["todo", "in_progress", "done"]] = "todo"
     priority: int
     due_date: datetime
 
-    @field_validator('priority')
-    @classmethod
-    def validate_priority(cls, v: int) -> int:
-        if not 1 <= v <= 5:
+    @model_validator(mode='after')
+    def validate_priority(self):
+        if not 1 <= self.priority <= 5:
             raise ValueError('Priority must be between 1 and 5')
-        return v
+        return self
 
 
 
@@ -34,17 +33,15 @@ class TaskRead(TaskCreate):
 
 
 class TaskUpdate(SQLModel):
-    title: Optional[str]
-    description: Optional[str]
-    list_id: Optional[str]
-    status: Optional[Literal["todo", "in_progress", "done"]]
-    priority: Optional[int]
-    due_date: Optional[datetime]
+    title: Optional[str] = None
+    description: Optional[str] = None
+    list_id: Optional[str] = None
+    status: Optional[Literal["todo", "in_progress", "done"]] = None
+    priority: Optional[int] = None
+    due_date: Optional[datetime] = None
 
-    @field_validator('priority')
-    @classmethod
-    def validate_priority(cls, v: int) -> int:
-        if v and not 1 <= v <= 5:
+    @model_validator(mode='after')
+    def validate_priority(self):
+        if self.priority and not 1 <= self.priority <= 5:
             raise ValueError('Priority must be between 1 and 5')
-        return v
-
+        return self

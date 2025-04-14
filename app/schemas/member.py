@@ -21,4 +21,4 @@ class MemberRead(MemberCreate):
 
 
 class MemberUpdate(SQLModel):
-    role: Optional[Literal["owner", "editor", "viewer"]]
+    role: Optional[Literal["owner", "editor", "viewer"]] = None

@@ -25,12 +25,15 @@ class UserRead(SQLModel):
     created_at: datetime
     role: str
 
+    class Config:
+        orm_mode = True
+
 
 
 
 class UserLogin(SQLModel):
-    username: Optional[str]
-    email: Optional[EmailStr]
+    username: Optional[str] = None
+    email: Optional[EmailStr] = None
     password: str
 
     @model_validator(mode='after')
@@ -43,9 +46,9 @@ class UserLogin(SQLModel):
 
 
 class UserUpdate(SQLModel):
-    first_name: Optional[str]
-    last_name: Optional[str]
-    role: Optional[Literal["admin", "member"]]
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    role: Optional[Literal["admin", "member"]] = None
 
 
 

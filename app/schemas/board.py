@@ -20,4 +20,4 @@ class BoardRead(BoardCreate):
 
 
 class BoardUpdate(SQLModel):
-    name: Optional[str]
+    name: Optional[str] = None

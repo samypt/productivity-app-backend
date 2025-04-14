@@ -6,7 +6,7 @@ from uuid import UUID
 
 class TeamCreate(SQLModel):
     name: str
-    description: Optional[str]
+    description: Optional[str] = None
 
 
 
@@ -18,4 +18,4 @@ class TeamRead(TeamCreate):
         orm_mode = True
 
 class TeamUpdate(SQLModel):
-    description: Optional[str]
+    description: Optional[str] = None
