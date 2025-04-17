@@ -62,3 +62,4 @@ async def delete_board(board_list_id: str, session: Session = db_session):
         raise HTTPException(status_code=404, detail="BoardList not found")
     session.delete(board_list_to_delete)
     session.commit()
+    return
