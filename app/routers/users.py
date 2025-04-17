@@ -2,9 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select, or_
 from app.models import User
 from app.schemas.user import UserCreate, UserRead, UserLogin, UserUpdate, UserGet
+from app.schemas.token import Token
 from app.database import get_session
 from app.utils.security import hash_password, verify_password
+from app.services.auth import create_access_token
 from pydantic import EmailStr
+
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -38,7 +41,7 @@ def validate_user(session: Session, email: EmailStr, username: str):
             raise HTTPException(status_code=400, detail="Username already taken")
 
 
-@router.post("/login")
+@router.post("/login",response_model=Token)
 async def login_user(user: UserLogin, session: Session = Depends(get_session)):
     statement = select(User).where(User.email == user.email)
     user_to_login = session.exec(statement).first()
@@ -47,7 +50,8 @@ async def login_user(user: UserLogin, session: Session = Depends(get_session)):
             not verify_password(user.password, user_to_login.hashed_password)):
         raise  HTTPException(status_code=401, detail="Invalid email or password")
 
-    return {"message": "Login successful"}
+    access_token = create_access_token(data={"sub": str(user_to_login.id)})
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.post("/", response_model=UserRead)
