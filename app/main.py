@@ -7,9 +7,11 @@ from app.routers.boards import router as board_router
 from app.routers.board_lists import router as board_list_router
 from app.routers.tasks import router as task_router
 from app.routers.events import router as event_router
+from app.routers.auth import router as auth_router
 
 app = FastAPI()
 
+app.include_router(auth_router, prefix="/api")
 app.include_router(user_router, prefix="/api")
 app.include_router(team_router, prefix="/api")
 app.include_router(project_router, prefix="/api")
