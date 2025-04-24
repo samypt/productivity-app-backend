@@ -1,12 +1,9 @@
 from datetime import datetime, timedelta, timezone
-from typing import Optional
-from jose import jwt, JWTError
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from sqlmodel import Session
+from jose import jwt, JWTError
 import os
-from app.models import User
-from app.database import get_session
+from typing import Optional, Annotated
 
 
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -26,10 +23,8 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 
 
-def get_current_user(
-    token: str = Depends(oauth2_scheme),
-    session: Session = Depends(get_session),
-) -> User:
+async def get_current_user(
+    token: Annotated[str, Depends(oauth2_scheme)]):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -37,13 +32,13 @@ def get_current_user(
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id: str = payload.get("sub")
-        if user_id is None:
+        user_id: str = payload.get("id")
+        username: str = payload.get("sub")
+        if user_id is None or username is None:
             raise credentials_exception
+        return {
+            'username': username,
+            'id': user_id
+        }
     except JWTError:
         raise credentials_exception
-
-    user = session.get(User, user_id).first()
-    if user is None:
-        raise credentials_exception
-    return user
