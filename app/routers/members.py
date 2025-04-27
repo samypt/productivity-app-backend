@@ -11,7 +11,7 @@ db_session = Depends(get_session)
 
 def validate_member(session: Session, user_id: str, team_id: str):
     """
-    Validates that a new member's user_id and team_id exist .
+    Validates that a new member's user_id and team_id exist.
 
     Args:
         session: SQLModel database session
@@ -19,7 +19,7 @@ def validate_member(session: Session, user_id: str, team_id: str):
         team_id: Team ID to check
 
     Raises:
-        HTTPException: If email or user_id or team_id not exist
+        HTTPException: If user_id or team_id not exist
     """
     user = session.get(User, user_id)
     team = session.get(Team, team_id)
