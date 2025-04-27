@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from sqlmodel import SQLModel
 from uuid import UUID
 from pydantic import model_validator
@@ -45,3 +45,10 @@ class EventUpdate(SQLModel):
             raise ValueError("End Time must be later than Start Time")
         return self
 
+
+
+class EventList(SQLModel):
+    events: List[EventRead]
+
+    class Config:
+        orm_mode = True
