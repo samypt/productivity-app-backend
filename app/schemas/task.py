@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, Literal
+from typing import Optional, Literal, List
 from sqlmodel import SQLModel
 from uuid import UUID
 from pydantic import model_validator
@@ -45,3 +45,12 @@ class TaskUpdate(SQLModel):
         if self.priority and not 1 <= self.priority <= 5:
             raise ValueError('Priority must be between 1 and 5')
         return self
+
+
+
+
+class TaskList(SQLModel):
+    tasks: List[TaskRead]
+
+    class Config:
+        orm_mode = True
