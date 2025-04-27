@@ -1,6 +1,9 @@
-from app.models import User
 from app.schemas.user import UserRead, UserUpdate, UserGet
 from app.database import get_session
+from app.schemas.event import EventList, EventRead
+from app.schemas.task import TaskList, TaskRead
+from app.schemas.teams import TeamList, TeamRead
+from app.models import Member, User
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from typing import Annotated
@@ -45,3 +48,39 @@ async def get_user(current_user: user_dependency, session: Session = Depends(get
     if not user_to_get:
         raise HTTPException(status_code=404, detail="User not found")
     return user_to_get
+
+
+@router.get('/me/tasks', response_model=TaskList)
+async def get_user_tasks(current_user: user_dependency, session: Session = Depends(get_session)):
+    members_query = select(Member).where(Member.user_id == current_user.get("id"))
+    members = session.exec(members_query).all()
+
+    if not members:
+        raise HTTPException(status_code=404, detail="The user isn't a member of any team")
+
+    tasks = []
+    for member in members:
+        tasks.extend(member.tasks)
+
+    if not tasks:
+        raise HTTPException(status_code=404, detail="No Tasks found for user")
+
+    return TaskList(tasks=[TaskRead.model_validate(task) for task in tasks])
+
+
+@router.get('/me/teams', response_model=TeamList)
+async def get_user_teams(current_user: user_dependency, session: Session = Depends(get_session)):
+    members_query = select(Member).where(Member.user_id == current_user.get("id"))
+    members = session.exec(members_query).all()
+
+    if not members:
+        raise HTTPException(status_code=404, detail="The user isn't a member of any team")
+
+    teams = []
+    for member in members:
+        teams.append(member.team)
+
+    if not teams:
+        raise HTTPException(status_code=404, detail="User does not belong to any team")
+
+    return TeamList(teams=[TeamRead.model_validate(team) for team in teams])
