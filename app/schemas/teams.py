@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from sqlmodel import SQLModel
 from uuid import UUID
 
@@ -17,5 +17,17 @@ class TeamRead(TeamCreate):
     class Config:
         orm_mode = True
 
+
+
+
 class TeamUpdate(SQLModel):
     description: Optional[str] = None
+
+
+
+
+class TeamList(SQLModel):
+    teams: List[TeamRead]
+
+    class Config:
+        orm_mode = True
