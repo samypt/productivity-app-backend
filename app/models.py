@@ -66,8 +66,8 @@ class TaskMemberLink(SQLModel, table=True):
 
 
 
-class TaskEventLink(SQLModel, table=True):
-    __tablename__ = 'task_event_link'
+class EvenMemberLink(SQLModel, table=True):
+    __tablename__ = 'event_member_link'
     id: str = Field(default_factory=lambda: str(uuid4()), primary_key=True)
     event_id: str = Field(
         sa_column=Column(ForeignKey("events.id", ondelete="CASCADE"))
@@ -109,7 +109,7 @@ class Member(SQLModel, table=True):
     team: Optional["Team"] = Relationship(back_populates='members', passive_deletes=True)
     tasks: List["Task"] = Relationship(back_populates="members", link_model=TaskMemberLink,
                                        passive_deletes=True)
-    events: List["Event"] = Relationship(back_populates="members", link_model=TaskEventLink,
+    events: List["Event"] = Relationship(back_populates="members", link_model=EvenMemberLink,
                                        passive_deletes=True)
 
 
@@ -210,5 +210,5 @@ class Event(SQLModel, table=True):
     # Relationships
     project: Optional["Project"] = Relationship(back_populates="events", passive_deletes=True)
     user: Optional["User"] = Relationship(back_populates="events", passive_deletes=True)
-    members: List["Member"] = Relationship(back_populates='events', link_model=TaskEventLink,
+    members: List["Member"] = Relationship(back_populates='events', link_model=EvenMemberLink,
                                            passive_deletes=True)
