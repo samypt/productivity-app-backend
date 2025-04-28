@@ -3,7 +3,7 @@ from app.database import get_session
 from app.schemas.event import EventList, EventRead
 from app.schemas.task import TaskList, TaskRead
 from app.schemas.teams import TeamList, TeamRead
-from app.models import Member, User
+from app.models import Member, User, Event
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from typing import Annotated
@@ -84,3 +84,23 @@ async def get_user_teams(current_user: user_dependency, session: Session = Depen
         raise HTTPException(status_code=404, detail="User does not belong to any team")
 
     return TeamList(teams=[TeamRead.model_validate(team) for team in teams])
+
+
+@router.get('/me/events', response_model=EventList)
+async def get_user_events(current_user: user_dependency, session: Session = Depends(get_session)):
+
+    members_query = select(Member).where(Member.user_id == current_user.get("id"))
+    members = session.exec(members_query).all()
+
+    events_query = select(Event).where(Event.created_by == current_user.get("id"))
+    user_events = session.exec(events_query).all()
+
+    events = []
+    for member in members:
+        events.extend(member.events)
+    events.extend(user_events)
+
+    if not events:
+        raise HTTPException(status_code=404, detail="User does not have any events")
+
+    return EventList(events=[EventRead.model_validate(event) for event in events])
