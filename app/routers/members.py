@@ -9,7 +9,7 @@ router = APIRouter(prefix="/members", tags=["Members"])
 db_session = Depends(get_session)
 
 
-def validate_member(session: Session, user_id: str, team_id: str):
+def validate_member(user_id: str, team_id: str, session: Session):
     """
     Validates that a new member's user_id and team_id exist.
 
@@ -44,7 +44,7 @@ def validate_member(session: Session, user_id: str, team_id: str):
 
 @router.post("/", response_model=MemberRead)
 async def create_member(member: MemberCreate, session: Session = db_session):
-    validate_member(session, member.user_id, member.team_id)
+    validate_member(member.user_id, member.team_id, session)
     new_member = Member(**member.model_dump())
     session.add(new_member)
     session.commit()
