@@ -1,0 +1,9 @@
+ROLE_VIEWER = "viewer"
+ROLE_EDITOR = "editor"
+ROLE_OWNER = "owner"
+
+ROLE_HIERARCHY = {
+    ROLE_VIEWER: 0,
+    ROLE_EDITOR: 1,
+    ROLE_OWNER: 2,
+}
