@@ -2,6 +2,8 @@ from datetime import datetime
 from typing import Optional, List
 from sqlmodel import SQLModel
 from uuid import UUID
+from .member import MemberRead
+from .user import UserPublic
 
 
 class TeamCreate(SQLModel):
@@ -26,8 +28,18 @@ class TeamUpdate(SQLModel):
 
 
 
+class TeamFullInfo(TeamRead):
+    membership: MemberRead
+    members: List[UserPublic]
+
+    class Config:
+        orm_mode = True
+
+
+
+
 class TeamList(SQLModel):
-    teams: List[TeamRead]
+    teams: List[TeamFullInfo]
 
     class Config:
         orm_mode = True

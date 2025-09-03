@@ -1,6 +1,7 @@
 from typing import Optional
 from sqlmodel import SQLModel
 from uuid import UUID
+from .task import TaskList
 
 
 class BoardListCreate(SQLModel):
@@ -23,3 +24,11 @@ class BoardListRead(BoardListCreate):
 class BoardListUpdate(SQLModel):
     name: Optional[str] = None
     position: Optional[int] = None
+
+
+
+class FullBoardList(BoardListRead):
+    tasks: TaskList
+
+    class Config:
+        orm_mode = True

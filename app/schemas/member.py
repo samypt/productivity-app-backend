@@ -22,3 +22,9 @@ class MemberRead(MemberCreate):
 
 class MemberUpdate(SQLModel):
     role: Optional[Literal["owner", "editor", "viewer"]] = None
+
+
+
+
+class AssignRequest(SQLModel):
+    member_id: str

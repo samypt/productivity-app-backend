@@ -1,7 +1,9 @@
 from datetime import datetime
-from typing import Optional
+from app.schemas.teams import TeamRead
+from typing import Optional, List
 from sqlmodel import SQLModel
 from uuid import UUID
+
 
 
 class ProjectCreate(SQLModel):
@@ -23,4 +25,15 @@ class ProjectRead(ProjectCreate):
 
 
 class ProjectUpdate(SQLModel):
+    name: Optional[str] = None
     description: Optional[str] = None
+
+
+
+
+class ProjectList(SQLModel):
+    projects: List[ProjectRead]
+    team: Optional[TeamRead]
+
+    class Config:
+        orm_mode = True

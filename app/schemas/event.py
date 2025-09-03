@@ -4,6 +4,10 @@ from sqlmodel import SQLModel
 from uuid import UUID
 from pydantic import model_validator
 
+from app.schemas.project import ProjectRead
+from app.schemas.teams import TeamRead
+from app.schemas.user import UserPublic
+
 
 class EventCreate(SQLModel):
     title: str
@@ -11,7 +15,7 @@ class EventCreate(SQLModel):
     project_id: str
     start_time: datetime
     end_time: datetime
-    created_by: str
+    # created_by: str
 
     @model_validator(mode='after')
     def check_end_time(self):
@@ -25,6 +29,7 @@ class EventCreate(SQLModel):
 class EventRead(EventCreate):
     id: UUID
     created_at: Optional[datetime]
+    created_by: str
 
     class Config:
         orm_mode = True
@@ -33,6 +38,7 @@ class EventRead(EventCreate):
 
 
 class EventUpdate(SQLModel):
+    project_id: str
     title: Optional[str] = None
     description: Optional[str] = None
     start_time: Optional[datetime] = None
@@ -47,8 +53,20 @@ class EventUpdate(SQLModel):
 
 
 
+
+class EventFull(EventRead):
+    team: TeamRead
+    project: ProjectRead
+    members: List[UserPublic]
+
+    class Config:
+        orm_mode = True
+
+
+
+
 class EventList(SQLModel):
-    events: List[EventRead]
+    events: List[EventFull]
 
     class Config:
         orm_mode = True

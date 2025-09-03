@@ -1,8 +1,9 @@
 from datetime import datetime
-from typing import Literal, Optional
+from typing import Literal, Optional, List
 from sqlmodel import SQLModel
 from pydantic import EmailStr, model_validator
 from uuid import UUID
+from .member import MemberRead
 
 
 class UserCreate(SQLModel):
@@ -23,6 +24,7 @@ class UserRead(SQLModel):
     last_name: str
     email: EmailStr
     created_at: datetime
+    updated_at: Optional[datetime] = None
     role: str
 
     class Config:
@@ -57,3 +59,30 @@ class UserGet(SQLModel):
     first_name: str
     last_name: str
     role: Optional[Literal["admin", "member"]]
+
+
+
+
+class UserPublic(SQLModel):
+    id: UUID
+    username: str
+    first_name: str
+    last_name: str
+    email: EmailStr
+    avatar_url: str
+    membership: MemberRead
+    avatar_url: Optional[str] = None
+    updated_at: Optional[datetime] = None
+
+
+    class Config:
+        orm_mode = True
+
+
+
+
+class UserList(SQLModel):
+    users: List[UserPublic]
+
+    class Config:
+        orm_mode = True
