@@ -11,9 +11,12 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 engine = create_engine(DATABASE_URL, echo=True)
 
 # Function to get a database session
-def get_session():
-    with Session(engine) as session:
+async def get_session():
+    session = Session(engine, autoflush=False, autocommit=False)
+    try:
         yield session
+    finally:
+        session.close()
 
 
 # Function to create tables
