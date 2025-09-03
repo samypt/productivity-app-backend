@@ -36,11 +36,11 @@ google-cloud-sdk/
 google-cloud-cli-*.tar.gz
 
 # Uploads
-# Uploads
-uploads/avatars/*.jpg
-uploads/avatars/*.jpeg
-uploads/avatars/*.png
-uploads/avatars/*.webp
+# Ignore everything inside uploads/avatars
+uploads/avatars/*
+
+# But keep a placeholder file so the folder exists in Git
+!uploads/avatars/.gitkeep
 
 # Secrets
 secrets/
