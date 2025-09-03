@@ -9,7 +9,7 @@ from ..schemas.user import UserPublic
 from ..services.auth import get_current_user
 from datetime import datetime
 from ..services.manager import ws_connection_manager
-from ..services.test_google_service import GoogleCalendarService
+from ..services.google_service import GoogleCalendarService
 from ..utils.time import to_naive, get_time_stamp
 from typing import Annotated, List
 

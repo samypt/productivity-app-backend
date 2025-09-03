@@ -5,7 +5,7 @@ from ..services.auth import get_current_user
 from ..models import User, Member, Event
 from typing import Annotated
 from pydantic import BaseModel
-from ..services.test_google_service import GoogleCalendarService
+from ..services.google_service import GoogleCalendarService
 import base64
 from urllib.parse import quote
 
