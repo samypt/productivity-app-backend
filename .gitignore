@@ -15,6 +15,8 @@ __pycache__/
 
 # Alembic migrations folder (not necessary to track migration history)
 migrations/versions/
+alembic.ini
+alembic/
 
 # FastAPI server logs
 *.log
@@ -25,3 +27,16 @@ migrations/versions/
 
 # PyCharm settings (if you're using PyCharm)
 .idea/
+
+# SSL certs
+*.pem
+
+# Google SDK
+google-cloud-sdk/
+google-cloud-cli-*.tar.gz
+
+# Uploads
+uploads/
+
+# Secrets
+secrets/
