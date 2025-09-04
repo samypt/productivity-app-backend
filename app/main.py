@@ -21,8 +21,7 @@ import logging
 from apscheduler.schedulers.background import BackgroundScheduler
 from .services.notifications.cleanup import delete_old_notifications
 from contextlib import asynccontextmanager
-import subprocess
-import os
+
 
 # Logger
 logger = logging.getLogger("uvicorn.error")
@@ -32,59 +31,18 @@ scheduler = BackgroundScheduler()
 
 # Lifespan context
 # Delete old read notifications
-# @asynccontextmanager
-# async def lifespan(app: FastAPI):
-#     # On startup
-#     scheduler.add_job(delete_old_notifications, "cron", hour=2)
-#     scheduler.start()
-#     logger.info("Scheduler started")
-#
-#     yield  # App runs here
-#
-#     # On shutdown
-#     scheduler.shutdown()
-#     logger.info("Scheduler stopped")
-
 @asynccontextmanager
-async def scheduler_lifespan(app: FastAPI):
-    """Start/stop background scheduler."""
+async def lifespan(app: FastAPI):
+    # On startup
     scheduler.add_job(delete_old_notifications, "cron", hour=2)
     scheduler.start()
     logger.info("Scheduler started")
 
-    yield
+    yield  # App runs here
 
+    # On shutdown
     scheduler.shutdown()
     logger.info("Scheduler stopped")
-
-
-@asynccontextmanager
-async def migration_lifespan(app: FastAPI):
-    """Run Alembic migrations if enabled via env var."""
-    if os.getenv("RUN_MIGRATIONS", "false").lower() == "true":
-        try:
-            logger.info("Generating new Alembic migration...")
-            subprocess.run(["alembic", "revision", "--autogenerate", "-m", "auto-generated"], check=True)
-        except subprocess.CalledProcessError as e:
-            logger.warning(f"No new migration generated or error: {e}")
-        try:
-            print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-            logger.info("Running Alembic migrations...")
-            subprocess.run(["alembic", "upgrade", "head"], check=True)
-            logger.info("Alembic migrations applied successfully.")
-            print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-        except Exception as e:
-            logger.error(f"Error running migrations: {e}")
-
-    yield
-
-
-# Combine lifespans into one
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    async with migration_lifespan(app):
-        async with scheduler_lifespan(app):
-            yield
 
 
 # App instance
