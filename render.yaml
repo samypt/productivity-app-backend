@@ -10,6 +10,7 @@ services:
         fromDatabase:
           name: fastapi-db
           property: connectionString
+    preDeployCommand: alembic upgrade head
 
 databases:
   - name: fastapi-db
