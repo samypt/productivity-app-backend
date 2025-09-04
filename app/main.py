@@ -22,6 +22,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from .services.notifications.cleanup import delete_old_notifications
 from contextlib import asynccontextmanager
 import subprocess
+import os
 
 # Logger
 logger = logging.getLogger("uvicorn.error")
