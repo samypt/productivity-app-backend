@@ -63,9 +63,16 @@ async def migration_lifespan(app: FastAPI):
     """Run Alembic migrations if enabled via env var."""
     if os.getenv("RUN_MIGRATIONS", "false").lower() == "true":
         try:
+            logger.info("Generating new Alembic migration...")
+            subprocess.run(["alembic", "revision", "--autogenerate", "-m", "auto-generated"], check=True)
+        except subprocess.CalledProcessError as e:
+            logger.warning(f"No new migration generated or error: {e}")
+        try:
+            print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
             logger.info("Running Alembic migrations...")
             subprocess.run(["alembic", "upgrade", "head"], check=True)
             logger.info("Alembic migrations applied successfully.")
+            print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
         except Exception as e:
             logger.error(f"Error running migrations: {e}")
 
