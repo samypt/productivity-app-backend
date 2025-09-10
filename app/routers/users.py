@@ -58,31 +58,6 @@ async def get_user(current_user: user_dependency, session: Session = Depends(get
     return UserRead.model_validate(user_to_get)
 
 
-# @router.get('/me/tasks', response_model=TaskList)
-# async def get_user_tasks(
-#         current_user: user_dependency,
-#         limit: int = Query(5, ge=1),
-#         offset: int = Query(0, ge=0),
-#         sort_by: str = Query("updated_at"),
-#         sort_order: str = Query("desc"),
-#         session: Session = Depends(get_session)):
-#     members_query = select(Member).where(Member.user_id == current_user.get("id"))
-#     members = session.exec(members_query).all()
-#
-#     if not members:
-#         raise HTTPException(status_code=404, detail="The user isn't a member of any team")
-#
-#     tasks = []
-#     for member in members:
-#         tasks.extend(member.tasks)
-#
-#     if not tasks:
-#         raise HTTPException(status_code=404, detail="No Tasks found for user")
-#
-#     return TaskList(tasks=[TaskRead.model_validate(task) for task in tasks])
-
-
-
 @router.get("/me/tasks", response_model=TaskList)
 async def get_user_tasks(
     current_user: user_dependency,
